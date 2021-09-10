@@ -1,4 +1,5 @@
 import sqlite3
+from re import escape
 from logzero import logger
 from cobopy import telegram
 from os import getenv
@@ -75,7 +76,7 @@ class Comic:
                     bot_token=getenv('BOT_TOKEN'),
                     chat_id=getenv('CHAT_ID'),
                     photo=self.source,
-                    caption="*Title:* %s\n*Site:* %s" % (self.title, self.comic_site.name)
+                    caption="*Title:* %s\n*Site:* %s" % (escape(self.title), escape(self.comic_site.name))
                 )
                 if resp.status_code == 200:
                     logger.info("Successfully sent telegram notification for Comic '%s: %s'!" % (
@@ -98,6 +99,7 @@ class Comic:
 
     def get_comic_id(self, database: sqlite3.Connection):
         c = database.cursor()
+        logger.debug("Source: %s" % self.source)
         c.execute('''
                SELECT comic_id FROM comics WHERE source is ?
            ''', (self.source,))
