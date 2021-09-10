@@ -1,6 +1,7 @@
 .idea
 .DS_Store
 *.db
+start.sh
 
 # Created by .ignore support plugin (hsz.mobi)
 ### Python template
