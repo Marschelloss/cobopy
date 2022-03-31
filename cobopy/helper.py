@@ -76,7 +76,8 @@ class Comic:
                     bot_token=getenv('BOT_TOKEN'),
                     chat_id=getenv('CHAT_ID'),
                     photo=self.source,
-                    caption="*Title:* %s\n*Site:* %s" % (escape(self.title), escape(self.comic_site.name))
+                    caption="*Title:* %s\n*Site:* %s" % (escape_special_chars(self.title),
+                                                         escape_special_chars(self.comic_site.name))
                 )
                 if resp.status_code == 200:
                     logger.info("Successfully sent telegram notification for Comic '%s: %s'!" % (
@@ -145,3 +146,29 @@ def setup_db():
     ''')
     database.commit()
     database.close()
+
+
+def escape_special_chars(string):
+    """
+    Escapes special characters via RegEx function and some more special characters like '!', or '{'.
+    """
+    new_string = escape(string)
+    char_list = [
+        '!',
+        '"',
+        '%',
+        "'",
+        ',',
+        '/',
+        ':',
+        ';',
+        '<',
+        '>',
+        '=',
+        '@',
+        '`'
+    ]
+    for char in char_list:
+        new_string = new_string.replace(char, '\\' + char)
+
+    return new_string
