@@ -3,6 +3,7 @@ from re import escape
 from logzero import logger
 from cobopy import telegram
 from os import getenv
+from time import sleep
 
 
 class ComicSite:
@@ -87,6 +88,12 @@ class Comic:
                         VALUES (?, ?)
                     ''', (1, self.get_comic_id(database)))
                     database.commit()
+                elif resp.status_code == 429:
+                    # Too many requests, need to wait. Comic get's send out in next batch.
+                    wait_time = resp.json()['parameters']['retry_after']
+                    logger.info("Error 'Too many requests': Need to wait %s seconds..." % wait_time)
+                    sleep(wait_time)
+                    database.rollback()
                 else:
                     logger.error("Error while sending telegram notification for Comic '%s: %s': %s" % (
                         self.comic_site.name, self.title, resp.content))
