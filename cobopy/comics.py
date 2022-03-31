@@ -24,20 +24,23 @@ def generate_comic_sites():
 
     # ---
 
-    exocomics = helper.ComicSite(name="Extra Ordinary",
-                                 url="https://www.exocomics.com/feed")
+    # Sadly we need cannot support Exocomics anymore, since they started using webp image files,
+    # which cannot be sent via Telegram (Telegram would send webp files as stickers instead of image files).
 
-    def parse_comics(self, soup: BeautifulSoup, db: Connection):
-        for item in soup.find_all("item"):
-            # Some non-magic Magic needed to get real picture url...
-            _comic = helper.Comic(title=item.find("title").text,
-                                  source="%s/wp-content/uploads/%s.jpg" % (path.dirname(exocomics.url),
-                                                                           item.find("title").text),
-                                  comic_site=self,
-                                  db=db)
+    # exocomics = helper.ComicSite(name="Extra Ordinary",
+    #                              url="https://www.exocomics.com/feed")
 
-    exocomics.parse_comics = parse_comics.__get__(exocomics, helper.ComicSite)
-    comic_sites_list.append(exocomics)
+    # def parse_comics(self, soup: BeautifulSoup, db: Connection):
+    #     for item in soup.find_all("item"):
+    #         # Some non-magic Magic needed to get real picture url...
+    #         item_soup = BeautifulSoup(item.find('content:encoded').contents[0], 'lxml')
+    #         _comic = helper.Comic(title=item.find("title").text,
+    #                               source=item_soup.find('source')['srcset'],
+    #                               comic_site=self,
+    #                               db=db)
+
+    # exocomics.parse_comics = parse_comics.__get__(exocomics, helper.ComicSite)
+    # comic_sites_list.append(exocomics)
 
     # ---
 
